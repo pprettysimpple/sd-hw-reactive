@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Interface</title>
+    <style>
+        form {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<h1>API Interface</h1>
+
+<form id="createUserForm">
+    <h2>Create User</h2>
+    <label for="userId">User ID:</label>
+    <input type="text" id="userId" required>
+    <label for="userCurrency">Currency:</label>
+    <input type="text" id="userCurrency" required>
+    <button type="submit">Create</button>
+    <pre id="createUserResult" class="result"></pre>
+</form>
+
+<form id="getUserForm">
+    <h2>Get User</h2>
+    <label for="getUserById">User ID:</label>
+    <input type="text" id="getUserById" required>
+    <button type="submit">Get</button>
+    <pre id="getUserResult" class="result"></pre>
+</form>
+
+<form id="addProductForm">
+    <h2>Add Product</h2>
+    <label for="productId">Product ID:</label>
+    <input type="text" id="productId" required>
+    <label for="productCurrency">Currency:</label>
+    <input type="text" id="productCurrency" required>
+    <button type="submit">Add</button>
+    <pre id="addProductResult" class="result"></pre>
+</form>
+
+<form id="getProductForm">
+    <h2>Get Product</h2>
+    <label for="getProductById">Product ID:</label>
+    <input type="text" id="getProductById" required>
+    <button type="submit">Get</button>
+    <pre id="getProductResult" class="result"></pre>
+</form>
+
+<form id="getAvailableProductsForm">
+    <h2>Get Available Products</h2>
+    <label for="availableProductsUserId">User ID:</label>
+    <input type="text" id="availableProductsUserId" required>
+    <button type="submit">Get</button>
+    <pre id="getAvailableProductsResult" class="result"></pre>
+</form>
+
+<form id="getProductsByCurrencyForm">
+    <h2>Get Products by Currency</h2>
+    <label for="productsByCurrency">Currency:</label>
+    <input type="text" id="productsByCurrency" required>
+    <button type="submit">Get</button>
+    <pre id="getProductsByCurrencyResult" class="result"></pre>
+</form>
+
+<script>
+    function callApi(method, endpoint, data) {
+        return fetch(`/api/${endpoint}`, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        }).then((response) => response.json());
+    }
+
+    function displayResults(resultElementId, data) {
+        const resultElement = document.getElementById(resultElementId);
+        resultElement.textContent = JSON.stringify(data, null, 2);
+    }
+
+    document.getElementById('createUserForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const userId = document.getElementById('userId').value;
+        const userCurrency = document.getElementById('userCurrency').value;
+        await callApi('POST', 'create_user', { id: userId, currency: userCurrency });
+        displayResults('createUserResult', { message: 'User created.' });
+    });
+
+    document.getElementById('getUserForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const userId = document.getElementById('getUserById').value;
+        const user = await callApi('POST', 'get_user', { id: userId });
+        displayResults('getUserResult', user);
+    });
+
+    document.getElementById('addProductForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const productId = document.getElementById('productId').value;
+        const productCurrency = document.getElementById('productCurrency').value;
+        await callApi('POST', 'add_product', { id: productId, currency: productCurrency });
+        displayResults('addProductResult', { message: 'Product added.' });
+    });
+
+    document.getElementById('getProductForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const productId = document.getElementById('getProductById').value;
+        const product = await callApi('POST', 'get_product', { id: productId });
+        displayResults('getProductResult', product);
+    });
+
+    document.getElementById('getAvailableProductsForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const userId = document.getElementById('availableProductsUserId').value;
+        const products = await callApi('POST', 'get_available_products', { user_id: userId });
+        displayResults('getAvailableProductsResult', products);
+    });
+
+    document.getElementById('getProductsByCurrencyForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const currency = document.getElementById('productsByCurrency').value;
+        const products = await callApi('POST', 'get_products_by_currency', { currency });
+        displayResults('getProductsByCurrencyResult', products);
+    });
+</script>
+</body>
+</html>
