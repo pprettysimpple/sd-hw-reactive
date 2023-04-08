@@ -10,6 +10,7 @@
     - default port for service is 3000
 - `docker-compose up` - run postgres in docker container with test data and settings
     - default port for postgres in container is 5555
+- visit `localhost:3000/index.html` to see everything by yourself
 
 #### How to stop
 - `docker-compose down` - stop postgres container
